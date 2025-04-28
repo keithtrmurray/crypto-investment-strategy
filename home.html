@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Welcome to the Crypto Investment Strategy Service</h1>
+    <p>Your personalized dashboard for cryptocurrency analysis and investment recommendations.</p>
+    
+    <div class="row">
+        <!-- Market Overview -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Market Overview</div>
+                <ul class="list-group list-group-flush">
+                    {% for coin in crypto_data %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <img src="{{ coin.image }}" alt="{{ coin.name }}" class="crypto-icon">
+                                {{ coin.name }} ({{ coin.symbol|upper }})
+                            </div>
+                            <div>
+                                <span>${{ "{:,}".format(coin.current_price) }}</span>
+                                <span class="ms-2 {{ \'price-up\' if coin.price_change_percentage_24h >= 0 else \'price-down\' }}">
+                                    {{ "{:.2f}".format(coin.price_change_percentage_24h) }}%
+                                </span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Trending Altcoins -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Trending Altcoins</div>
+                <ul class="list-group list-group-flush">
+                    {% for coin in trending_coins %}
+                        <li class="list-group-item">
+                            {{ coin.name }} ({{ coin.symbol|upper }}) - Rank #{{ coin.market_cap_rank }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Economic Indicators -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Economic Indicators</div>
+                <ul class="list-group list-group-flush">
+                    {% for key, value in economic_indicators.items() %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>{{ key.replace("_", " ").title() }}</span>
+                            <span>{{ value }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sample Chart -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Bitcoin Price Chart (Sample)</div>
+                <div class="card-body text-center">
+                    {% if chart %}
+                        <img src="data:image/png;base64,{{ chart }}" alt="Bitcoin Price Chart" class="img-fluid">
+                    {% else %}
+                        <p>Chart could not be generated.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
