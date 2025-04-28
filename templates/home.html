@@ -19,7 +19,7 @@
                             </div>
                             <div>
                                 <span>${{ "{:,}".format(coin.current_price) }}</span>
-                                <span class="ms-2 {{ \'price-up\' if coin.price_change_percentage_24h >= 0 else \'price-down\' }}">
+                                <span class="ms-2 {{ "price-up" if coin.price_change_percentage_24h >= 0 else "price-down" }}">
                                     {{ "{:.2f}".format(coin.price_change_percentage_24h) }}%
                                 </span>
                             </div>
