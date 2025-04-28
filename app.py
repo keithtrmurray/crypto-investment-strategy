@@ -988,6 +988,36 @@ def initialize_database():
 
 # --- Main Execution --- 
 
+@app.route('/initialize-db')
+def init_db_route():
+    try:
+        # Only allow this in development or with a special key
+        init_key = request.args.get('key')
+        if init_key != 'setup123':
+            return "Unauthorized", 401
+        
+        logger.info("Initializing database from web route...")
+        db.create_all()
+        
+        # Check if admin user exists
+        admin_user = User.query.filter_by(username='admin').first()
+        if not admin_user:
+            logger.info("Creating default admin user...")
+            hashed_password = bcrypt.generate_password_hash('admin123').decode('utf-8')
+            admin = User(username='admin', email='admin@example.com', password=hashed_password, is_admin=True)
+            db.session.add(admin)
+            # Create default preferences for admin
+            prefs = UserPreference(user=admin)
+            db.session.add(prefs)
+            db.session.commit()
+            return "Database initialized and admin user created successfully!"
+        else:
+            return "Database initialized. Admin user already exists."
+    except Exception as e:
+        logger.error(f"Error initializing database: {e}", exc_info=True)
+        return f"Error initializing database: {str(e)}", 500
+
+
 if __name__ == '__main__':
     # Check for initialization flag
     if '--initialize-db' in sys.argv:
