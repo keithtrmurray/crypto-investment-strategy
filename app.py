@@ -710,7 +710,7 @@ def home():
     logger.info("Accessed home page")
     try:
         trending_coins = get_trending_coins()
-        econ_indicators = get_economic_indicators()
+        economic_indicators=econ_data = get_economic_indicators()
         # Get brief data for overview
         btc_data = get_crypto_data('bitcoin', days=2)
         eth_data = get_crypto_data('ethereum', days=2)
@@ -731,7 +731,7 @@ def home():
     except Exception as e:
         logger.error(f"Error loading home page: {e}", exc_info=True)
         flash('Error loading page data. Please try again later.', 'danger')
-        return render_template('home.html', trending_coins=[], econ_indicators={}, market_overview=[])
+        return render_template('home.html', trending_coins=[], economic_indicators={}, market_overview=[])
 
 @app.route('/dashboard')
 @login_required
