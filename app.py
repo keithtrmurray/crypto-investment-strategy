@@ -709,6 +709,7 @@ def run_daily_email_scheduler():
 def home():
     logger.info("Accessed home page")
     try:
+        market_overview_data = []
         trending_coins = get_trending_coins()
         economic_indicators=econ_data = get_economic_indicators()
         # Get brief data for overview
