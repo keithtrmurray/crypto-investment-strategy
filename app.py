@@ -733,8 +733,7 @@ def home():
     except Exception as e:
         logger.error(f"Error loading home page: {e}", exc_info=True)
         flash('Error loading page data. Please try again later.', 'danger')
-        return render_template('home.html', trending_coins=[], economic_indicators={}, market_overview=[]) # Ensure this key is 'economic_indicators'
-The key is that the variable name on the left side of the equals sign in render_template (e.g., 
+        return render_template('home.html', trending_coins=[], economic_indicators={}, market_overview=[]) # Ensure this key is 'economic_indicators' 
 
 @app.route('/dashboard')
 @login_required
