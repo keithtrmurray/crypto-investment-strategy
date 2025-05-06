@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+{% block title %}Education - Crypto Investment Strategy{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Cryptocurrency Education Center</h1>
+
+    <div class="accordion" id="cryptoEducationAccordion">
+        <!-- Section 1: What is Cryptocurrency? -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    What is Cryptocurrency?
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#cryptoEducationAccordion">
+                <div class="accordion-body">
+                    <p>A cryptocurrency is a digital or virtual currency that is secured by cryptography, which makes it nearly impossible to counterfeit or double-spend. Many cryptocurrencies are decentralized networks based on blockchain technology—a distributed ledger enforced by a disparate network of computers.</p>
+                    <p><strong>Key Features:</strong></p>
+                    <ul>
+                        <li><strong>Decentralization:</strong> Most cryptocurrencies are not controlled by any central authority like a government or bank.</li>
+                        <li><strong>Cryptography:</strong> Transactions are secured using cryptographic techniques.</li>
+                        <li><strong>Blockchain Technology:</strong> Transactions are recorded on a public ledger called a blockchain.</li>
+                        <li><strong>Limited Supply:</strong> Many cryptocurrencies have a finite supply, like Bitcoin, which can influence their value.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Understanding Blockchain -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Understanding Blockchain Technology
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#cryptoEducationAccordion">
+                <div class="accordion-body">
+                    <p>Blockchain is a system of recording information in a way that makes it difficult or impossible to change, hack, or cheat the system. A blockchain is essentially a digital ledger of transactions that is duplicated and distributed across the entire network of computer systems on the blockchain.</p>
+                    <p>Each block in the chain contains a number of transactions, and every time a new transaction occurs on the blockchain, a record of that transaction is added to every participant’s ledger. The decentralized database managed by multiple participants is known as Distributed Ledger Technology (DLT).</p>
+                    <p><strong>Core Components:</strong></p>
+                    <ul>
+                        <li><strong>Blocks:</strong> Bundles of transactions with a cryptographic hash of the previous block.</li>
+                        <li><strong>Chain:</strong> Blocks linked together in chronological order.</li>
+                        <li><strong>Decentralized Network:</strong> Maintained by a network of computers (nodes).</li>
+                        <li><strong>Immutability:</strong> Once data is recorded, it is very difficult to alter.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Common Cryptocurrencies -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Common Cryptocurrencies (Bitcoin, Ethereum, Solana)
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#cryptoEducationAccordion">
+                <div class="accordion-body">
+                    <p><strong>Bitcoin (BTC):</strong> The first and most well-known cryptocurrency. Created in 2009, it operates as a peer-to-peer electronic cash system. It is often seen as "digital gold" and a store of value.</p>
+                    <p><strong>Ethereum (ETH):</strong> A decentralized, open-source blockchain with smart contract functionality. Ether (ETH) is the native cryptocurrency of the platform. Ethereum enables the development of decentralized applications (dApps) and non-fungible tokens (NFTs).</p>
+                    <p><strong>Solana (SOL):</strong> A high-performance blockchain supporting builders around the world creating crypto apps that scale today. It is known for its speed and low transaction costs, aiming to overcome the scalability limitations of older blockchains.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Investment Strategies -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    Basic Crypto Investment Strategies
+                </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#cryptoEducationAccordion">
+                <div class="accordion-body">
+                    <p>Investing in cryptocurrencies can be highly volatile and risky. It is crucial to do thorough research (DYOR - Do Your Own Research) before investing.</p>
+                    <ul>
+                        <li><strong>HODLing:</strong> Buying and holding cryptocurrencies for the long term, regardless of short-term price fluctuations.</li>
+                        <li><strong>Dollar-Cost Averaging (DCA):</strong> Investing a fixed amount of money at regular intervals, regardless of the asset's price. This can help mitigate the impact of volatility.</li>
+                        <li><strong>Diversification:</strong> Spreading investments across various cryptocurrencies to reduce risk. Don't put all your eggs in one basket.</li>
+                        <li><strong>Technical Analysis (TA):</strong> Analyzing statistical trends gathered from trading activity, such as price movement and volume.</li>
+                        <li><strong>Fundamental Analysis (FA):</strong> Evaluating an asset's intrinsic value by examining related economic and financial factors, including the project's technology, team, use case, and community.</li>
+                    </ul>
+                    <p><em>Disclaimer: This is not financial advice. Cryptocurrencies are highly volatile. Invest only what you can afford to lose.</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Risks and Security -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFive">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                    Risks and Security in Crypto
+                </button>
+            </h2>
+            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#cryptoEducationAccordion">
+                <div class="accordion-body">
+                    <p><strong>Risks:</strong></p>
+                    <ul>
+                        <li><strong>Volatility:</strong> Prices can change dramatically in short periods.</li>
+                        <li><strong>Regulatory Uncertainty:</strong> Governments are still figuring out how to regulate cryptocurrencies.</li>
+                        <li><strong>Security Breaches:</strong> Exchanges and wallets can be hacked.</li>
+                        <li><strong>Scams and Fraud:</strong> The crypto space attracts many scams; be cautious of projects promising unrealistic returns.</li>
+                    </ul>
+                    <p><strong>Security Best Practices:</strong></p>
+                    <ul>
+                        <li><strong>Use Strong, Unique Passwords:</strong> For all exchange accounts and wallets.</li>
+                        <li><strong>Enable Two-Factor Authentication (2FA):</strong> Adds an extra layer of security.</li>
+                        <li><strong>Secure Your Private Keys:</strong> If you manage your own wallet, keep your private keys or seed phrase extremely safe and offline. Never share them.</li>
+                        <li><strong>Beware of Phishing:</strong> Double-check URLs and be wary of unsolicited messages asking for your information.</li>
+                        <li><strong>Use Reputable Exchanges and Wallets:</strong> Research platforms before using them.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
