@@ -1,23 +1,18 @@
 services:
-  # Web service for the Flask app
   - type: web
-    name: crypto-strategy-web
+    name: web-crypto-strategy # Make sure this is your actual service name on Render
     env: python
-    plan: free # Use the free instance type
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:app"
+    startCommand: "gunicorn --workers 1 --worker-class gevent app:app --timeout 120"
+    plan: free # Or your current plan if different
     envVars:
       - key: PYTHON_VERSION
-        value: 3.10.12 # Specify Python version
+        value: 3.11.0 # Or your current Python version if different
       - key: DATABASE_URL
         fromDatabase:
-          name: crypto-db
+          name: crypto-strategy-db # IMPORTANT: Replace this with the actual name of your Render PostgreSQL database
           property: connectionString
-
-  # PostgreSQL database
-  - type: psql
-    name: crypto-db
-    plan: free # Use the free database plan
-    databaseName: crypto_strategy_db
-    user: crypto_user
-
+      - key: SECRET_KEY
+        generateValue: true # This will generate a new secret key. If you have one set, you can keep your existing one.
+      - key: FLASK_ENV
+        value: production
