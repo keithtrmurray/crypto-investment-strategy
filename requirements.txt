@@ -7,3 +7,4 @@ pandas
 matplotlib
 gunicorn
 psycopg2-binary
+gevent
