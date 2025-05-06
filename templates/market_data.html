@@ -1,0 +1,370 @@
+{% extends "layout.html" %}
+{% block title %}Market Data - Crypto Investment Strategy{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Live Crypto Market Data & Indicators</h1>
+
+    <!-- Real-time Market Overview -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Real-time Market Overview</h3>
+        </div>
+        <div class="card-body">
+            <div class="row" id="market-overview-cards">
+                <!-- Bitcoin -->
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><img src="https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" alt="BTC" class="crypto-icon me-2">Bitcoin (BTC) </h5>
+                            <p class="card-text fs-4">Price: <span id="btc-price">Loading...</span></p>
+                            <p class="card-text">24h Change: <span id="btc-change">Loading...</span></p>
+                            <p class="card-text">Market Cap: <span id="btc-marketcap">Loading...</span></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Ethereum -->
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><img src="https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png" alt="ETH" class="crypto-icon me-2">Ethereum (ETH) </h5>
+                            <p class="card-text fs-4">Price: <span id="eth-price">Loading...</span></p>
+                            <p class="card-text">24h Change: <span id="eth-change">Loading...</span></p>
+                            <p class="card-text">Market Cap: <span id="eth-marketcap">Loading...</span></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Solana -->
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><img src="https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png" alt="SOL" class="crypto-icon me-2">Solana (SOL) </h5>
+                            <p class="card-text fs-4">Price: <span id="sol-price">Loading...</span></p>
+                            <p class="card-text">24h Change: <span id="sol-change">Loading...</span></p>
+                            <p class="card-text">Market Cap: <span id="sol-marketcap">Loading...</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Indicators Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Technical Indicators</h3>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="coin-select-tech" class="form-label">Select Cryptocurrency:</label>
+                <select id="coin-select-tech" class="form-select">
+                    <option value="bitcoin">Bitcoin (BTC)</option>
+                    <option value="ethereum">Ethereum (ETH)</option>
+                    <option value="solana">Solana (SOL)</option>
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 mb-3">
+                    <div class="card">
+                        <div class="card-header">Price Chart (30 Days)</div>
+                        <div class="card-body"><canvas id="priceChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <div class="card">
+                        <div class="card-header">Volume Chart (30 Days)</div>
+                        <div class="card-body"><canvas id="volumeChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <div class="card">
+                        <div class="card-header">RSI (14-day)</div>
+                        <div class="card-body"><canvas id="rsiChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <div class="card">
+                        <div class="card-header">MACD</div>
+                        <div class="card-body"><canvas id="macdChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-12 mb-3">
+                    <div class="card">
+                        <div class="card-header">Bollinger Bands</div>
+                        <div class="card-body"><canvas id="bollingerBandsChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trending Altcoins Table -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Trending Altcoins</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Symbol</th>
+                        <th>Price</th>
+                        <th>24h Change</th>
+                        <th>Market Cap</th>
+                        <th>Signal</th>
+                    </tr>
+                </thead>
+                <tbody id="trending-altcoins-table">
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Helper function to format numbers with commas
+function formatNumber(num) {
+    if (num === null || num === undefined) return "N/A";
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// Helper function to format percentage change
+function formatPercentage(change) {
+    if (change === null || change === undefined) return "N/A";
+    const value = parseFloat(change).toFixed(2);
+    const color = value >= 0 ? "text-success" : "text-danger";
+    const sign = value >= 0 ? "+" : "";
+    return `<span class="${color}">${sign}${value}%</span>`;
+}
+
+// Fetch and display real-time market overview
+async function fetchMarketOverview() {
+    const coins = ["bitcoin", "ethereum", "solana"];
+    const ids = ["btc", "eth", "sol"];
+    try {
+        for (let i = 0; i < coins.length; i++) {
+            const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coins[i]}&vs_currencies=usd&include_market_cap=true&include_24hr_change=true`) ;
+            if (!response.ok) {
+                console.error(`Error fetching ${coins[i]} data: ${response.status}`);
+                document.getElementById(`${ids[i]}-price`).textContent = "Error";
+                document.getElementById(`${ids[i]}-change`).textContent = "Error";
+                document.getElementById(`${ids[i]}-marketcap`).textContent = "Error";
+                continue;
+            }
+            const data = await response.json();
+            const coinData = data[coins[i]];
+            document.getElementById(`${ids[i]}-price`).textContent = `$${formatNumber(coinData.usd.toFixed(2))}`;
+            document.getElementById(`${ids[i]}-change`).innerHTML = formatPercentage(coinData.usd_24h_change);
+            document.getElementById(`${ids[i]}-marketcap`).textContent = `$${formatNumber(coinData.usd_market_cap.toFixed(0))}`;
+        }
+    } catch (error) {
+        console.error("Error fetching market overview:", error);
+        ids.forEach(id => {
+            document.getElementById(`${id}-price`).textContent = "API Error";
+            document.getElementById(`${id}-change`).textContent = "API Error";
+            document.getElementById(`${id}-marketcap`).textContent = "API Error";
+        });
+    }
+}
+
+// Chart instances
+let priceChartInstance, volumeChartInstance, rsiChartInstance, macdChartInstance, bollingerBandsChartInstance;
+
+// Fetch and display technical indicator charts
+async function fetchTechnicalIndicators(coinId = "bitcoin") {
+    try {
+        const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=30&interval=daily`) ;
+        if (!response.ok) {
+            console.error(`Error fetching technical indicators for ${coinId}: ${response.status}`);
+            // Display error on charts or clear them
+            if(priceChartInstance) priceChartInstance.destroy();
+            // ... destroy other charts
+            return;
+        }
+        const data = await response.json();
+        
+        const dates = data.prices.map(price => new Date(price[0]).toLocaleDateString());
+        const prices = data.prices.map(price => price[1]);
+        const volumes = data.total_volumes.map(volume => volume[1]);
+
+        // Price Chart
+        if (priceChartInstance) priceChartInstance.destroy();
+        priceChartInstance = new Chart(document.getElementById("priceChart"), {
+            type: "line",
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: "Price (USD)",
+                    data: prices,
+                    borderColor: "#007bff",
+                    tension: 0.1
+                }]
+            }
+        });
+
+        // Volume Chart
+        if (volumeChartInstance) volumeChartInstance.destroy();
+        volumeChartInstance = new Chart(document.getElementById("volumeChart"), {
+            type: "bar",
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: "Volume (USD)",
+                    data: volumes,
+                    backgroundColor: "rgba(0, 123, 255, 0.5)"
+                }]
+            }
+        });
+
+        // RSI (Simplified - using price data as a placeholder for actual RSI calculation)
+        // For a real RSI, you would need a library or implement the formula
+        const rsiPlaceholder = prices.map(p => (p / Math.max(...prices)) * 100); // Example placeholder
+        if (rsiChartInstance) rsiChartInstance.destroy();
+        rsiChartInstance = new Chart(document.getElementById("rsiChart"), {
+            type: "line",
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: "RSI (Placeholder)",
+                    data: rsiPlaceholder,
+                    borderColor: "#28a745",
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // MACD (Simplified - placeholder)
+        const macdLine = prices.slice(12).map((p, i) => p - prices[i]); // Example placeholder
+        const signalLine = macdLine.slice(9).map((p, i) => macdLine.slice(i, i+9).reduce((a,b)=>a+b,0)/9);
+        if (macdChartInstance) macdChartInstance.destroy();
+        macdChartInstance = new Chart(document.getElementById("macdChart"), {
+            type: "line",
+            data: {
+                labels: dates.slice(12 + 9),
+                datasets: [
+                    { label: "MACD (Placeholder)", data: macdLine.slice(9), borderColor: "#ffc107", tension: 0.1 },
+                    { label: "Signal (Placeholder)", data: signalLine, borderColor: "#dc3545", tension: 0.1 }
+                ]
+            }
+        });
+
+        // Bollinger Bands (Simplified - placeholder)
+        const sma20 = prices.map((_, i, arr) => {
+            if (i < 19) return null;
+            return arr.slice(i - 19, i + 1).reduce((a, b) => a + b, 0) / 20;
+        }).filter(v => v !== null);
+        const stdDev = prices.map((_, i, arr) => {
+            if (i < 19) return null;
+            const slice = arr.slice(i - 19, i + 1);
+            const mean = slice.reduce((a, b) => a + b, 0) / 20;
+            return Math.sqrt(slice.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / 20);
+        }).filter(v => v !== null);
+
+        const upperBand = sma20.map((sma, i) => sma + (stdDev[i] * 2));
+        const lowerBand = sma20.map((sma, i) => sma - (stdDev[i] * 2));
+
+        if (bollingerBandsChartInstance) bollingerBandsChartInstance.destroy();
+        bollingerBandsChartInstance = new Chart(document.getElementById("bollingerBandsChart"), {
+            type: "line",
+            data: {
+                labels: dates.slice(19),
+                datasets: [
+                    { label: "Price", data: prices.slice(19), borderColor: "#6f42c1", tension: 0.1 },
+                    { label: "SMA (20)", data: sma20, borderColor: "#fd7e14", tension: 0.1, borderDash: [5, 5] },
+                    { label: "Upper Band", data: upperBand, borderColor: "#20c997", tension: 0.1, fill: false },
+                    { label: "Lower Band", data: lowerBand, borderColor: "#20c997", tension: 0.1, fill: alse } // Fill between upper and lower if desired
+                ]
+            }
+        });
+
+    } catch (error) {
+        console.error("Error fetching technical indicators:", error);
+    }
+}
+
+// Fetch and display trending altcoins
+async function fetchTrendingAltcoins() {
+    try {
+        const response = await fetch("https://api.coingecko.com/api/v3/search/trending") ;
+        if (!response.ok) {
+            console.error(`Error fetching trending altcoins: ${response.status}`);
+            document.getElementById("trending-altcoins-table").innerHTML = `<tr><td colspan="7" class="text-center">Error loading data</td></tr>`;
+            return;
+        }
+        const data = await response.json();
+        const tableBody = document.getElementById("trending-altcoins-table");
+        tableBody.innerHTML = ""; // Clear previous data
+
+        // Fetch details for each trending coin (top 7)
+        for (let i = 0; i < Math.min(data.coins.length, 7); i++) {
+            const coin = data.coins[i].item;
+            const detailResponse = await fetch(`https://api.coingecko.com/api/v3/coins/${coin.id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`) ;
+            if (!detailResponse.ok) {
+                console.error(`Error fetching details for ${coin.name}: ${detailResponse.status}`);
+                continue;
+            }
+            const detailData = await detailResponse.json();
+            const marketData = detailData.market_data;
+
+            const row = tableBody.insertRow();
+            row.insertCell().textContent = i + 1;
+            row.insertCell().innerHTML = `<img src="${coin.thumb}" alt="${coin.symbol}" class="crypto-icon me-2"> ${coin.name}`;
+            row.insertCell().textContent = coin.symbol.toUpperCase();
+            row.insertCell().textContent = marketData.current_price.usd ? `$${formatNumber(marketData.current_price.usd.toFixed(2))}` : "N/A";
+            row.insertCell().innerHTML = marketData.price_change_percentage_24h ? formatPercentage(marketData.price_change_percentage_24h) : "N/A";
+            row.insertCell().textContent = marketData.market_cap.usd ? `$${formatNumber(marketData.market_cap.usd.toFixed(0))}` : "N/A";
+            
+            // Simplified signal logic (example)
+            let signal = "Neutral";
+            let signalClass = "text-muted";
+            if (marketData.price_change_percentage_24h > 2) {
+                signal = "Buy";
+                signalClass = "text-success fw-bold";
+            } else if (marketData.price_change_percentage_24h < -2) {
+                signal = "Sell";
+                signalClass = "text-danger fw-bold";
+            }
+            row.insertCell().innerHTML = `<span class="${signalClass}">${signal}</span>`;
+        }
+    } catch (error) {
+        console.error("Error fetching trending altcoins:", error);
+        document.getElementById("trending-altcoins-table").innerHTML = `<tr><td colspan="7" class="text-center">API Error</td></tr>`;
+    }
+}
+
+// Initial data load and event listeners
+document.addEventListener("DOMContentLoaded", () => {
+    fetchMarketOverview();
+    fetchTechnicalIndicators(); // Default to Bitcoin
+    fetchTrendingAltcoins();
+
+    document.getElementById("coin-select-tech").addEventListener("change", (event) => {
+        fetchTechnicalIndicators(event.target.value);
+    });
+
+    // Refresh data every 2 minutes
+    setInterval(() => {
+        fetchMarketOverview();
+        fetchTrendingAltcoins();
+        // Optionally refresh charts, but be mindful of API limits
+        const selectedCoin = document.getElementById("coin-select-tech").value;
+        fetchTechnicalIndicators(selectedCoin);
+    }, 120000); // 120000 ms = 2 minutes
+});
+
+</script>
+{% endblock %}
+
