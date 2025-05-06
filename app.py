@@ -724,14 +724,17 @@ def home():
         if not sol_data.empty:
              market_overview.append({'name': 'Solana', 'price': sol_data['price'].iloc[-1], 'change': (sol_data['price'].iloc[-1]/sol_data['price'].iloc[0]-1)*100 if len(sol_data['price']) > 1 else 0})
 
-        return render_template('home.html', 
-                               trending_coins=trending_coins, 
-                               econ_indicators=econ_indicators,
-                               market_overview=market_overview)
+        return render_template('home.html',
+                     trending_coins=trending_coins,
+                     economic_indicators=econ_data,  # Pass econ_data with the key 'economic_indicators'
+                     market_overview=market_overview_data,
+                     # ...
+                     )
     except Exception as e:
         logger.error(f"Error loading home page: {e}", exc_info=True)
         flash('Error loading page data. Please try again later.', 'danger')
-        return render_template('home.html', trending_coins=[], economic_indicators={}, market_overview=[])
+        return render_template('home.html', trending_coins=[], economic_indicators={}, market_overview=[]) # Ensure this key is 'economic_indicators'
+The key is that the variable name on the left side of the equals sign in render_template (e.g., 
 
 @app.route('/dashboard')
 @login_required
