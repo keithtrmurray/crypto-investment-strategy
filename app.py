@@ -412,6 +412,7 @@ def home():
         return render_template('home.html', market_overview=market_overview, trending_coins=trending_coins, econ_indicators=econ_indicators)
     except Exception as e:
         logger.error(f"Error on home page: {e}", exc_info=True)
+        return render_template('home.html', market_overview=[], trending_coins=[], econ_indicators={})
         flash('Error loading homepage data. Some information may be missing.', 'danger')
         return render_template('home.html', market_overview=[], trending_coins=[], econ_indicators={})
 
