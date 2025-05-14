@@ -29,7 +29,7 @@ from email.mime.image import MIMEImage
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format=\'%(asctime)s - %(name)s - %(levelname)s - %(message)s\',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[logging.StreamHandler(sys.stdout)] # Log to stdout for Render
 )
 logger = logging.getLogger(__name__)
