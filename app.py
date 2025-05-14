@@ -48,7 +48,7 @@ def get_env_var(name, default=None, required=False):
     value = os.environ.get(name, default)
     log_value = '[SET]' if value else '[NOT SET]' 
     if name in ["SECRET_KEY", "DATABASE_URL"] and value:
-        log_value = \"[SET]\"
+        log_value = '[SET]'
     elif value and name not in [\"SECRET_KEY\", \"DATABASE_URL\"]:
         log_value = value
         
