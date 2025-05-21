@@ -1,0 +1,143 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section"><script type='text/javascript' src='https://vida-private.s3.us-east-1.amazonaws.com/YDLfXDVd1HIV2efmYBDuw0c7Xu2gtJG3LP7wRa0lLc1f1i1x9NFsNnbquVMBpNv-V0hRE27WN7FNjY6YqyTPzQ=='></script>
+    <h1>Migration Guide</h1>
+    <div class="alert alert-info">
+        <h4 class="alert-heading">Hosting Migration Options</h4>
+        <p>This guide provides instructions for migrating your Crypto Strategy application to alternative free hosting platforms when your Render free tier expires.</p>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Option 1: Railway</h5>
+        </div>
+        <div class="card-body">
+            <h6>Features:</h6>
+            <ul>
+                <li>Generous free tier with 500 hours of runtime per month</li>
+                <li>Easy GitHub integration</li>
+                <li>Built-in PostgreSQL database</li>
+                <li>Simple deployment process</li>
+            </ul>
+            
+            <h6>Migration Steps:</h6>
+            <ol>
+                <li>Create an account at <a href="https://railway.app" target="_blank">Railway.app</a></li>
+                <li>Connect your GitHub repository</li>
+                <li>Create a new project and select your repository</li>
+                <li>Add a PostgreSQL database to your project</li>
+                <li>Set the required environment variables:
+                    <ul>
+                        <li>DATABASE_URL (will be automatically provided)</li>
+                        <li>SECRET_KEY</li>
+                        <li>DB_INIT_KEY</li>
+                    </ul>
+                </li>
+                <li>Deploy your application</li>
+                <li>Initialize your database using the provided URL</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Option 2: Fly.io</h5>
+        </div>
+        <div class="card-body">
+            <h6>Features:</h6>
+            <ul>
+                <li>Free tier includes 3 shared-cpu-1x 256mb VMs</li>
+                <li>1GB persistent volume storage</li>
+                <li>Global edge network</li>
+                <li>Custom domains with SSL</li>
+            </ul>
+            
+            <h6>Migration Steps:</h6>
+            <ol>
+                <li>Install the Fly CLI: <code>curl -L https://fly.io/install.sh | sh</code></li>
+                <li>Sign up and authenticate: <code>fly auth signup</code></li>
+                <li>Create a fly.toml file in your project root:
+                <pre><code>
+# fly.toml
+app = "crypto-strategy"
+kill_signal = "SIGINT"
+kill_timeout = 5
+
+[build]
+  builder = "paketobuildpacks/builder:base"
+
+[env]
+  PORT = "8080"
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[[services]]
+  http_checks = []
+  internal_port = 8080
+  protocol = "tcp"
+  script_checks = []
+                </code></pre>
+                </li>
+                <li>Create a Procfile in your project root:
+                <pre><code>web: gunicorn app:app</code></pre>
+                </li>
+                <li>Launch your app: <code>fly launch</code></li>
+                <li>Add a PostgreSQL database: <code>fly postgres create</code></li>
+                <li>Attach the database: <code>fly postgres attach</code></li>
+                <li>Set secrets: <code>fly secrets set SECRET_KEY=your_secret_key DB_INIT_KEY=your_db_init_key</code></li>
+                <li>Deploy: <code>fly deploy</code></li>
+                <li>Initialize your database using the provided URL</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">Option 3: PythonAnywhere</h5>
+        </div>
+        <div class="card-body">
+            <h6>Features:</h6>
+            <ul>
+                <li>Free tier with basic features</li>
+                <li>Beginner-friendly interface</li>
+                <li>Built for Python applications</li>
+                <li>MySQL database included</li>
+            </ul>
+            
+            <h6>Migration Steps:</h6>
+            <ol>
+                <li>Create an account at <a href="https://www.pythonanywhere.com" target="_blank">PythonAnywhere</a></li>
+                <li>Go to the "Web" tab and create a new web app</li>
+                <li>Select "Flask" as your framework</li>
+                <li>Clone your GitHub repository:
+                <pre><code>git clone https://github.com/yourusername/your-repo.git</code></pre>
+                </li>
+                <li>Create a virtual environment and install dependencies:
+                <pre><code>
+mkvirtualenv --python=/usr/bin/python3.8 myenv
+pip install -r requirements.txt
+                </code></pre>
+                </li>
+                <li>Configure your WSGI file to point to your app</li>
+                <li>Set up environment variables in the WSGI file</li>
+                <li>Create a MySQL database from the Databases tab</li>
+                <li>Update your DATABASE_URL to use MySQL</li>
+                <li>Reload your web app</li>
+                <li>Initialize your database using the provided URL</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="alert alert-warning">
+        <h4 class="alert-heading">Important Notes</h4>
+        <ul>
+            <li>Always back up your database before migration</li>
+            <li>Test the migration in a staging environment if possible</li>
+            <li>Update your DNS settings if you're using a custom domain</li>
+            <li>Monitor your application after migration to ensure everything is working properly</li>
+        </ul>
+    </div>
+</div>
+{% endblock content %}
