@@ -168,26 +168,27 @@ def get_trending_coins():
             logger.info('Cache expired for trending coins')
 
     logger.info('Fetching trending coins from API')
-    try:
+        try:
         url = 'https://api.coingecko.com/api/v3/search/trending'
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, timeout=10 )
         response.raise_for_status()
         data = response.json()
         
-        if not data or 'coins' not in data:
-            logger.warning('Incomplete data received from CoinGecko for trending coins')
-            raise ValueError('Incomplete data from API')
-            
         trending = []
-        for coin_data in data['coins'][:5]:
-            item = coin_data.get('item')
-            if not item: continue
-            trending.append({
-                'id': item.get('id', 'N/A'), 'name': item.get('name', 'N/A'),
-                'symbol': item.get('symbol', 'N/A'), 'market_cap_rank': item.get('market_cap_rank', 'N/A'),
-                'price_btc': item.get('price_btc', 0), 'score': item.get('score', 0),
-                'thumb': item.get('thumb', '')
-            })
+        if data and 'coins' in data:
+            for coin_data in data['coins'][:5]:
+                item = coin_data.get('item', {})
+                if not item: continue
+                trending.append({
+                    'id': item.get('id', 'N/A'), 'name': item.get('name', 'N/A'),
+                    'symbol': item.get('symbol', 'N/A'), 'market_cap_rank': item.get('market_cap_rank', 'N/A'),
+                    'price_btc': item.get('price_btc', 0), 'score': item.get('score', 0),
+                    'thumb': item.get('thumb', '')
+                })
+        else:
+            logger.warning('Incomplete data received from CoinGecko for trending coins')
+            
+
         api_cache[cache_key] = (list(trending), datetime.datetime.utcnow())
         logger.info(f'Successfully fetched and cached {len(trending)} trending coins')
         return trending
